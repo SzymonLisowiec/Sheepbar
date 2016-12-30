@@ -24,6 +24,7 @@ var Sheepbar = new Sheepbar(options);
 
 ## TODO
 - support for mobile devices
+- Slimming and optymalization
 
 ## License
 MIT License
