@@ -15,7 +15,7 @@ var Sheepbar = new Sheepbar(options);
 ## Options
 - **position** - CSS position (Have to be absolute, relative or fixed). [string] [Default: relative]
 - **jump** - Jumping when scrolling content (in pixels). [int/float] [Default: 32]
-- **scrollingBlurDelay** - Time delay when removing class "sheepbar-scrolling" of scrollbar (in milliseconds). [int] [Default: 600]
+- **scrollingBlurDelay** - Time delay when removing class "sheepbar-scrolling" of scrollbar (in ms). [int] [Default: 600]
 - **callback_wheel** - callback of event "wheel" [function] [Default: empty function]
 - **callback_mousedown** - callback of event "mousedown" [function] [Default: empty function]
 - **callback_mouseup** - callback of event "mouseup" [function] [Default: empty function]
