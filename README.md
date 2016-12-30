@@ -10,6 +10,8 @@ Just add class "sheepbar" for the div element.
 ```JavaScript
 var Sheepbar = new Sheepbar(options);
 ```
+- **options** - The configuration of scrollbar. [object]
+
 ## Options
 - **position** - CSS position (Have to be absolute, relative or fixed). [string] [Default: relative]
 - **jump** - Jumping when scrolling content (in pixels). [int/float] [Default: 32]
