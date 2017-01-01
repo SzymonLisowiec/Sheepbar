@@ -176,7 +176,7 @@ function Sheepbar(config){
     	var axises = [];
       if((sheeps[e].dataset.x === 'true')) axises[0] = 'x';
       if((sheeps[e].dataset.y === 'true')) axises[1] = 'y';
-      SB.init(sheeps[e], axises, (sheeps[e].dataset.editor === 'true')?true:false);
+      SB.init(sheeps[e], axises, (typeof sheeps[e].dataset.editor != 'undefined')?true:false);
     }
   }
   
