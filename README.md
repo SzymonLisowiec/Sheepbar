@@ -1,5 +1,5 @@
 # Sheepbar
-Light weight scrollbar in pure javascript.
+Light weight and simple scrollbar in pure javascript.
 
 
 
