@@ -73,7 +73,12 @@ function Sheepbar(config){
       e.scrollbox.style.display = 'block';
       e.scrollbox.style.position = 'absolute';
       e.scrollbox.style.top = '0';
-      e.scrollbox.style.overflow = 'scroll';
+      if(e.axises.indexOf('x') > -1)
+      	e.scrollbox.style.overflowX = 'scroll';
+      else e.scrollbox.style.overflowX = 'hidden';
+      if(e.axises.indexOf('y') > -1)
+      	e.scrollbox.style.overflowY = 'scroll';
+      else e.scrollbox.style.overflowY = 'hidden';
      	e.content = document.createElement('div');
       e.content.className = 'sheepbar-content';
       e.content.style.display = 'inline-block';
@@ -165,8 +170,8 @@ function Sheepbar(config){
   for(var e in sheeps){
   	if(e%1 == 0){
     	var axises = [];
-      if((sheeps[e].dataset.sheepbar_x === 'true')) axises[0] = 'x';
-      if((sheeps[e].dataset.sheepbar_y === 'true')) axises[1] = 'y';
+      if((sheeps[e].dataset.x === 'true')) axises[0] = 'x';
+      if((sheeps[e].dataset.y === 'true')) axises[1] = 'y';
       SB.init(sheeps[e], axises);
     }
   }
