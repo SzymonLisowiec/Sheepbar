@@ -15,7 +15,7 @@ function Sheepbar(config){
     elements: {},
     counter: 0,
     
-  	init: function(e, axises){
+  	init: function(e, axises, editor){
     	
       SB.counter++;
       SB.elements[SB.counter] = {
@@ -56,7 +56,7 @@ function Sheepbar(config){
 
           e.scrollbar[axis].style.position = 'absolute';
           e.scrollbar[axis].style[e[axis].cssAxis] = 0;
-
+          
           e.scrollbar[axis].addEventListener('mousedown', function(event){
             e.scrollbarmousedown[axis] = event[e[axis].clientAxis];
           });
@@ -89,6 +89,10 @@ function Sheepbar(config){
       e.scrollbox.style.width =	parseFloat(e.e.clientWidth)+(e.e.clientWidth-e.scrollbox.clientWidth)+'px';
       e.scrollbox.style.height =	parseFloat(e.e.clientHeight)+(e.e.clientHeight-e.scrollbox.clientHeight)+'px';
       e.scrollbox.stylesheep = window.getComputedStyle(e.scrollbox);
+      if(editor){
+      	e.content.setAttribute('contenteditable','true');
+        e.content.addEventListener('keyup', SB.resize);
+      }
       
       window.addEventListener('mousemove', function(event){
       	var axis = 'x';
@@ -152,7 +156,7 @@ function Sheepbar(config){
       	
         e.axises.forEach(function(axis){
         	e.scrollbar[axis].style[e[axis].size] = ((e.e[e[axis].clientSize]*((e.e[e[axis].clientSize]/e.content[e[axis].clientSize])*100))/100)+'px';
-          e.scrollbar[axis].style[e[axis].cssAxis] = (((parseFloat(e.scrollbox.scrollLeft)*100)/e.content.clientWidth)*e.e.clientWidth)/100+'px';
+          e.scrollbar[axis].style[e[axis].cssAxis] = (((parseFloat(e.scrollbox[e[axis].scroll])*100)/e.content.clientWidth)*e.e.clientWidth)/100+'px';
         });
         
       }
@@ -172,7 +176,7 @@ function Sheepbar(config){
     	var axises = [];
       if((sheeps[e].dataset.x === 'true')) axises[0] = 'x';
       if((sheeps[e].dataset.y === 'true')) axises[1] = 'y';
-      SB.init(sheeps[e], axises);
+      SB.init(sheeps[e], axises, (sheeps[e].dataset.editor === 'true')?true:false);
     }
   }
   
