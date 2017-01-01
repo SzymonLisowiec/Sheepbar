@@ -4,7 +4,7 @@ Light weight scrollbar in pure javascript.
 
 
 ## Initialize
-Just add class "sheepbar" for the div element.
+Just add CSS and class "sheepbar" for the div element. Manage axis, adding attribute "data-x" and "data-y" with boolean value "true" or "false". Do you need textarea? You can add "data-editor" attribute.
 
 ## Constructor
 ```JavaScript
@@ -14,17 +14,52 @@ var Sheepbar = new Sheepbar(options);
 
 ## Options
 - **position** - CSS position (Have to be absolute, relative or fixed). [string] [Default: relative]
-- **jump** - Jumping when scrolling content (in pixels). [int/float] [Default: 32]
-- **scrollingBlurDelay** - Time delay when removing class "sheepbar-scrolling" of scrollbar (in ms). [int] [Default: 600]
-- **callback_wheel** - callback of event "wheel" [function] [Default: empty function]
+- **callback_scroll** - callback of event "scroll" [function] [Default: empty function]
 - **callback_mousedown** - callback of event "mousedown" [function] [Default: empty function]
 - **callback_mouseup** - callback of event "mouseup" [function] [Default: empty function]
 - **callback_mousemove** - callback of event "mousemove" [function] [Default: empty function]
 - **callback_resize** - callback of event "resize" [function] [Default: empty function]
 
+## Simple CSS
+```CSS
+.sheepbar>.sheepbar-scrollbar>div {
+  width: 100%;
+  height: 96%;
+  top: 2%;
+  bottom: 2%;
+  position: absolute;
+  border-radius: 6px;
+  background: #34495e;
+  opacity: 0.52;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.sheepbar>.sheepbar-scrollbar.sheepbar-x>div {
+  width: 96%;
+  height: 100%;
+  top: 0;
+  right: 2%;
+  bottom: 0;
+  left: 2%;
+}
+
+.sheepbar>.sheepbar-scrollbar>div:hover, .sheepbar>.sheepbar-scrollbar>div:active { opacity: 0.88; }
+.sheepbar>.sheepbar-scrollbar.sheepbar-x { height: 6px; bottom: 2px; }
+.sheepbar>.sheepbar-scrollbar.sheepbar-y { width: 6px; right: 2px; }
+```
+- **.sheepbar>.sheepbar-scrollbox** - Container of content
+- **.sheepbar>.sheepbar-scrollbox>.sheepbar-content** - Content
+- **.sheepbar>.sheepbar-scrollbar** - Container of scrollbar pointer
+- **.sheepbar>.sheepbar-scrollbar>div** - Scrollbar pointer
+
+## Demo
+https://jsfiddle.net/yh52v9hd/
+
 ## TODO
-- support for mobile devices
-- Slimming and optymalization
+- [x] Support for mobile devices
+- [x] Slimming and optymalization
+- [ ] Maybe more optymalization...
 
 ## License
 MIT License
