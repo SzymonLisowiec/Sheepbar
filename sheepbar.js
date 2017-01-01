@@ -1,213 +1,176 @@
-'use strict';
+`use strict`;
 
-function Sheepbar(config) {
-
+function Sheepbar(config){
+  
   var SB = {
-
+  	
     config: {
-      position: 'relative',
-      jump: 32,
-      scrollingBlurDelay: 600,
-      callback_wheel: function() {},
-      callback_mousedown: function() {},
-      callback_mouseup: function() {},
-      callback_mousemove: function() {},
-      callback_resize: function() {}
+    	position: 'relative',
+      callback_scroll: function(){},
+      callback_mousedown: function(){},
+      callback_mouseup: function(){},
+      callback_mousemove: function(){},
+      callback_resize: function(){}
     },
     elements: {},
     counter: 0,
-
-    init: function(e) {
-
+    
+  	init: function(e, axises){
+    	
       SB.counter++;
       SB.elements[SB.counter] = {
-        e: e
+      	e: e,
+        axises: axises,
+        scrollbarmousedown: {
+        	x: false,
+          y: false
+        },
+        scrollbar: {
+        	x: false,
+          y: false
+        },
+        x: {
+        	axis: 'x',
+          size: 'width',
+          clientSize: 'clientWidth',
+          cssAxis: 'left',
+          clientAxis: 'clientX',
+          scroll: 'scrollLeft'
+        },
+        y: {
+        	axis: 'y',
+          size: 'height',
+          clientSize: 'clientHeight',
+          cssAxis: 'top',
+          clientAxis: 'clientY',
+          scroll: 'scrollTop'
+        },
+        loadScrollbar: function(axis){
+          if(['x','y'].indexOf(axis) == -1) return;
+          e.scrollbar[axis] = document.createElement('div');
+          e.scrollbar[axis].className = 'sheepbar-scrollbar sheepbar-'+axis;
+          e.scrollbar[axis].appendChild(document.createElement('div'));
+          e.e.appendChild(e.scrollbar[axis]);
+
+          e.scrollbar[axis].style[e[axis].size] = ((e.e[e[axis].clientSize]*((e.e[e[axis].clientSize]/e.content[e[axis].clientSize])*100))/100)+'px';
+
+          e.scrollbar[axis].style.position = 'absolute';
+          e.scrollbar[axis].style[e[axis].cssAxis] = 0;
+
+          e.scrollbar[axis].addEventListener('mousedown', function(event){
+            e.scrollbarmousedown[axis] = event[e[axis].clientAxis];
+          });
+        }
       };
       e = SB.elements[SB.counter];
-
-      e.e.style.position = SB.config['position'];
+    	
+      e.e.style.position = SB.config.position;
       e.e.style.overflow = 'hidden';
-      e.content = document.createElement('div');
+      e.scrollbox = document.createElement('div');
+      e.scrollbox.className = 'sheepbar-scrollbox';
+      e.scrollbox.style.width = e.e.clientWidth+'px';
+      e.scrollbox.style.height =	e.e.clientHeight+'px';
+      e.scrollbox.style.display = 'block';
+      e.scrollbox.style.position = 'absolute';
+      e.scrollbox.style.top = '0';
+      e.scrollbox.style.overflow = 'scroll';
+     	e.content = document.createElement('div');
       e.content.className = 'sheepbar-content';
-      e.content.style.top = 0;
-      e.content.style.left = 0;
+      e.content.style.display = 'inline-block';
       e.content.innerHTML = e.e.innerHTML;
+      e.scrollbox.appendChild(e.content);
       e.e.innerHTML = '';
-      e.e.appendChild(e.content);
-
-      e.scrollbar = {
-        x: (e.e.dataset.sheepbar_x === 'true') ? true : false,
-        y: (e.e.dataset.sheepbar_y === 'true') ? true : false,
-      };
-
-      if (e.content.clientWidth > e.e.clientWidth && e.scrollbar.x) {
-
-        e.scrollbar.x = document.createElement('div');
-        e.scrollbar.x.className = 'sheepbar-scrollbar sheepbar-x';
-        e.scrollbar.x.appendChild(document.createElement('div'));
-        e.e.appendChild(e.scrollbar.x);
-
-        e.scrollbar.x.style.width = ((e.e.clientWidth * ((e.e.clientWidth / e.content.clientWidth) * 100)) / 100) + 'px';
-
-        e.scrollbar.x.style.left = 0;
-        e.content.style.left = 0;
-        e.scrollbarXmousedown = false;
-
-        e.scrollbar.x.addEventListener('mousedown', function(event) {
-          e.scrollbarXmousedown = event.clientX;
-        });
-
-        window.addEventListener('mousemove', function(event) {
-          if (e.scrollbarXmousedown) {
-            if (event.clientX > e.scrollbarXmousedown) {
-              e.scrollbar.x.style.left = parseFloat(e.scrollbar.x.style.left) + (event.clientX - e.scrollbarXmousedown) + 'px';
-              if (parseFloat(e.scrollbar.x.style.left) > (e.e.clientWidth - parseFloat(e.scrollbar.x.style.width)))
-                e.scrollbar.x.style.left = (e.e.clientWidth - parseFloat(e.scrollbar.x.style.width)) + 'px';
-            } else if (event.clientX < e.scrollbarXmousedown) {
-              e.scrollbar.x.style.left = parseFloat(e.scrollbar.x.style.left) - (e.scrollbarXmousedown - event.clientX) + 'px';
-              if (parseFloat(e.scrollbar.x.style.left) < 0)
-                e.scrollbar.x.style.left = 0;
-            }
-            e.content.style.left = 0 - (((parseFloat(e.scrollbar.x.style.left) * 100) / e.e.clientWidth) * e.content.clientWidth) / 100 + 'px';
-            e.scrollbarXmousedown = event.clientX;
-            if (document.selection) {
-              document.selection.empty();
-            } else if (window.getSelection) {
-              window.getSelection().removeAllRanges();
-            }
-          }
-        });
-
-      }
-
-      if (e.content.clientHeight > e.e.clientHeight && e.scrollbar.y) {
-
-        e.scrollbar.y = document.createElement('div');
-        e.scrollbar.y.className = 'sheepbar-scrollbar sheepbar-y';
-        e.scrollbar.y.appendChild(document.createElement('div'));
-        e.e.appendChild(e.scrollbar.y);
-
-        e.scrollbar.y.style.height = ((e.e.clientHeight * ((e.e.clientHeight / e.content.clientHeight) * 100)) / 100) + 'px';
-
-        e.scrollbar.y.style.top = 0;
-        e.content.style.top = 0;
-        e.scrollbarYmousedown = false;
-
-        e.scrollbar.y.addEventListener('mousedown', function(event) {
-          e.scrollbarYmousedown = event.clientY;
-          SB.config.callback_mousedown();
-        });
-
-        window.addEventListener('mousemove', function(event) {
-          if (e.scrollbarYmousedown) {
-            if (event.clientY > e.scrollbarYmousedown) {
-              e.scrollbar.y.style.top = parseFloat(e.scrollbar.y.style.top) + (event.clientY - e.scrollbarYmousedown) + 'px';
-              if (parseFloat(e.scrollbar.y.style.top) > (e.e.clientHeight - parseFloat(e.scrollbar.y.style.height)))
-                e.scrollbar.y.style.top = (e.e.clientHeight - parseFloat(e.scrollbar.y.style.height)) + 'px';
-            } else if (event.clientY < e.scrollbarYmousedown) {
-              e.scrollbar.y.style.top = parseFloat(e.scrollbar.y.style.top) - (e.scrollbarYmousedown - event.clientY) + 'px';
-              if (parseFloat(e.scrollbar.y.style.top) < 0)
-                e.scrollbar.y.style.top = 0;
-            }
-            e.content.style.top = 0 - (((parseFloat(e.scrollbar.y.style.top) * 100) / e.e.clientHeight) * e.content.clientHeight) / 100 + 'px';
-            e.scrollbarYmousedown = event.clientY;
-            if (document.selection) {
-              document.selection.empty();
-            } else if (window.getSelection) {
-              window.getSelection().removeAllRanges();
-            }
-          }
-          SB.config.callback_mousemove();
-        });
-
-      }
-
-      window.addEventListener('mouseup', function(event) {
-        e.scrollbarYmousedown = false;
-        e.scrollbarXmousedown = false;
+      e.e.appendChild(e.scrollbox);
+      e.scrollbox.style.width =	parseFloat(e.e.clientWidth)+(e.e.clientWidth-e.scrollbox.clientWidth)+'px';
+      e.scrollbox.style.height =	parseFloat(e.e.clientHeight)+(e.e.clientHeight-e.scrollbox.clientHeight)+'px';
+      e.scrollbox.stylesheep = window.getComputedStyle(e.scrollbox);
+      
+      window.addEventListener('mousemove', function(event){
+      	var axis = 'x';
+      	if(e.scrollbarmousedown.y) axis = 'y';
+        else if(!e.scrollbarmousedown.x) return;
+        
+        if(event[e[axis].clientAxis] > e.scrollbarmousedown[axis]){
+        
+        	e.scrollbar[axis].style[e[axis].cssAxis] = parseFloat(e.scrollbar[axis].style[e[axis].cssAxis])+(event[e[axis].clientAxis]-e.scrollbarmousedown[axis])+'px';
+          if(parseFloat(e.scrollbar[axis].style[e[axis].cssAxis]) > (e.e[e[axis].clientSize]-parseFloat(e.scrollbar[axis].style[e[axis].size])))
+          	e.scrollbar[axis].style[e[axis].cssAxis] = (e.e[e[axis].clientSize]-parseFloat(e.scrollbar[axis].style[e[axis].size]))+'px';
+            
+        }else if(event[e[axis].clientAxis] < e.scrollbarmousedown[axis]){
+        
+        	e.scrollbar[axis].style[e[axis].cssAxis] = parseFloat(e.scrollbar[axis].style[e[axis].cssAxis])-(e.scrollbarmousedown[axis]-event[e[axis].clientAxis])+'px';
+          if(parseFloat(e.scrollbar[axis].style[e[axis].cssAxis]) < 0)
+          	e.scrollbar[axis].style[e[axis].cssAxis] = 0;
+            
+        }
+        e.scrollbox[e[axis].scroll] = (((parseFloat(e.scrollbar[axis].style[e[axis].cssAxis])*100)/e.e[e[axis].clientSize])*e.content[e[axis].clientSize])/100;
+        e.scrollbarmousedown[axis] = event[e[axis].clientAxis];
+        if(document.selection){
+        	document.selection.empty();
+        }else if(window.getSelection){
+        	window.getSelection().removeAllRanges();
+        }
+        SB.config.callback_mousemove();
+      });
+      
+      e.axises.forEach(function(axis){
+      	if(e.content[e[axis].clientSize] > e.e[e[axis].clientSize])
+        e.loadScrollbar(axis);
+      });
+      
+      window.addEventListener('mouseup', function(event){
+      	e.scrollbarmousedown.x = false;
+      	e.scrollbarmousedown.y = false;
         SB.config.callback_mouseup();
       });
-
-      e.e.addEventListener('wheel', function(event) {
-        var axis = false;
-        if (e.scrollbar.x && event.clientY >= e.e.clientHeight - e.scrollbar.x.clientHeight * 2) {
-          axis = 'x';
-          e.scrollbar.x.firstChild.className += ' sheepbar-scrolling';
-          e.scrollbar.x.sheepbarSto = setTimeout(function() {
-            e.scrollbar.x.firstChild.className = e.scrollbar.x.firstChild.className.replace(' sheepbar-scrolling', '');
-          }, SB.config['scrollingBlurDelay']);
-        } else {
-          axis = 'y';
-          e.scrollbar.y.firstChild.className += ' sheepbar-scrolling';
-          e.scrollbar.y.sheepbarSto = setTimeout(function() {
-            e.scrollbar.y.firstChild.className = e.scrollbar.y.firstChild.className.replace(' sheepbar-scrolling', '');
-          }, SB.config['scrollingBlurDelay']);
-        }
-
-        if (axis) {
-          if (event.wheelDelta > 0) {
-            if (axis == 'x') {
-              if (parseFloat(e.content.style.left) < 0) {
-                e.content.style.left = ((parseFloat(e.content.style.left) + SB.config.jump > 0) ? 0 : parseFloat(e.content.style.left) + SB.config.jump) + 'px';
-                e.scrollbar.x.style.left = parseFloat(e.scrollbar.x.style.left) - ((SB.config.jump * ((e.e.clientWidth / e.content.clientWidth) * 100)) / 100) + 'px';
-                if (parseFloat(e.scrollbar.x.style.left) < 0)
-                  e.scrollbar.x.style.left = 0;
-              }
-            } else if (parseFloat(e.content.style.top) < 0) {
-              e.content.style.top = ((parseFloat(e.content.style.top) + SB.config.jump > 0) ? 0 : parseFloat(e.content.style.top) + SB.config.jump) + 'px';
-              e.scrollbar.y.style.top = parseFloat(e.scrollbar.y.style.top) - ((SB.config.jump * ((e.e.clientHeight / e.content.clientHeight) * 100)) / 100) + 'px';
-              if (parseFloat(e.scrollbar.y.style.top) < 0)
-                e.scrollbar.y.style.top = 0;
-            }
-          } else {
-            if (axis == 'x') {
-              var max = (0 - (e.content.clientWidth - e.e.clientWidth));
-              if (parseFloat(e.content.style.left) > max) {
-                e.content.style.left = ((parseFloat(e.content.style.left) - SB.config.jump < max) ? max : parseFloat(e.content.style.left) - SB.config.jump) + 'px';
-                e.scrollbar.x.style.left = parseFloat(e.scrollbar.x.style.left) + ((SB.config.jump * ((e.e.clientWidth / e.content.clientWidth) * 100)) / 100) + 'px';
-                if (parseFloat(e.scrollbar.x.style.left) > (e.e.clientWidth - parseFloat(e.scrollbar.x.style.width)))
-                  e.scrollbar.x.style.left = (e.e.clientWidth - parseFloat(e.scrollbar.x.style.width)) + 'px';
-              }
-            } else {
-              var max = (0 - (e.content.clientHeight - e.e.clientHeight));
-              if (parseFloat(e.content.style.top) > max) {
-                e.content.style.top = ((parseFloat(e.content.style.top) - SB.config.jump < max) ? max : parseFloat(e.content.style.top) - SB.config.jump) + 'px';
-                e.scrollbar.y.style.top = parseFloat(e.scrollbar.y.style.top) + ((SB.config.jump * ((e.e.clientHeight / e.content.clientHeight) * 100)) / 100) + 'px';
-                if (parseFloat(e.scrollbar.y.style.top) > (e.e.clientHeight - parseFloat(e.scrollbar.y.style.height)))
-                  e.scrollbar.y.style.top = (e.e.clientHeight - parseFloat(e.scrollbar.y.style.height)) + 'px';
-              }
-            }
-          }
-        }
-
-        SB.config.callback_wheel();
-
+      
+      e.e.addEventListener('change', SB.resize);
+      e.scrollbox.addEventListener('scroll', function(event){
+        
+        e.axises.forEach(function(axis){
+        	e.scrollbar[axis].style[e[axis].cssAxis] = (((parseFloat(e.scrollbox[e[axis].scroll])*100)/e.content[e[axis].clientSize])*e.e[e[axis].clientSize])/100+'px';
+        });
+        
+        SB.config.callback_scroll();
+        
       });
-
+      
     },
-
-    resize: function() {
-      for (var e in SB.elements) {
-        e = SB.elements[e];
-        if (e.scrollbar.x)
-          e.scrollbar.x.style.width = ((e.e.clientWidth * ((e.e.clientWidth / e.content.clientWidth) * 100)) / 100) + 'px';
-        if (e.scrollbar.y)
-          e.scrollbar.y.style.height = ((e.e.clientHeight * ((e.e.clientHeight / e.content.clientHeight) * 100)) / 100) + 'px';
+    
+    resize: function(){
+    	for(var e in SB.elements){
+      	e = SB.elements[e];
+        e.scrollbox.style.width = e.e.clientWidth+'px';
+      	e.scrollbox.style.height =	e.e.clientHeight+'px';
+        e.scrollbox.style.width =	parseFloat(e.e.clientWidth)+(e.e.clientWidth-e.scrollbox.clientWidth)+'px';
+      	e.scrollbox.style.height =	parseFloat(e.e.clientHeight)+(e.e.clientHeight-e.scrollbox.clientHeight)+'px';
+      	
+        e.axises.forEach(function(axis){
+        	e.scrollbar[axis].style[e[axis].size] = ((e.e[e[axis].clientSize]*((e.e[e[axis].clientSize]/e.content[e[axis].clientSize])*100))/100)+'px';
+          e.scrollbar[axis].style[e[axis].cssAxis] = (((parseFloat(e.scrollbox.scrollLeft)*100)/e.content.clientWidth)*e.e.clientWidth)/100+'px';
+        });
+        
       }
-
+      
       SB.config.callback_resize();
     }
-
+  	
   };
-
-  for (var c in config)
-    if (typeof SB.config[c] != 'undefined')
-      SB.config[c] = config[c];
-
+  
+  for(var c in config)
+  	if(typeof SB.config[c] != 'undefined')
+    	SB.config[c] = config[c];
+  
   var sheeps = document.getElementsByClassName('sheepbar');
-  for (var e in sheeps)
-    if (e % 1 == 0) SB.init(sheeps[e]);
-
+  for(var e in sheeps){
+  	if(e%1 == 0){
+    	var axises = [];
+      if((sheeps[e].dataset.sheepbar_x === 'true')) axises[0] = 'x';
+      if((sheeps[e].dataset.sheepbar_y === 'true')) axises[1] = 'y';
+      SB.init(sheeps[e], axises);
+    }
+  }
+  
   window.addEventListener('resize', SB.resize);
-
+  
 }
