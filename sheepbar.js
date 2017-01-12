@@ -6,7 +6,7 @@
  License: MIT
 *****************************************************/
 function Sheepbar(config){
-  `use strict`;
+  'use strict';
   var SB = {
   	
     config: {
