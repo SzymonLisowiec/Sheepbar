@@ -1,7 +1,12 @@
-`use strict`;
-
+/*****************************************************
+ Name: Sheepbar
+ Version: 1.0
+ Author: Szymon Lisowiec
+ Github: https://github.com/SzymonLisowiec/Sheepbar
+ License: MIT
+*****************************************************/
 function Sheepbar(config){
-  
+  `use strict`;
   var SB = {
   	
     config: {
